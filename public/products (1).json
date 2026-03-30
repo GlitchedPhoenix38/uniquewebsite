@@ -1,0 +1,26 @@
+[
+  {
+    "name": "COOLMAX Pro 5000",
+    "description": "Heavy-duty industrial air cooler designed for large factory floors and warehouses. Features triple-layer honeycomb cooling pads with enhanced airflow design for maximum cooling efficiency in extreme conditions.",
+    "specifications": "5000 CFM | 120 x 80 x 180 cm | Factory floors, Large warehouses, Production lines",
+    "image": "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&h=450&fit=crop",
+    "video": "",
+    "available": true
+  },
+  {
+    "name": "COOLMAX Compact 2000",
+    "description": "Space-efficient industrial cooler perfect for workshops and smaller production areas. Maintains robust cooling capacity while fitting into compact spaces without compromising performance.",
+    "specifications": "2000 CFM | 80 x 60 x 140 cm | Workshops, Small factories, Assembly stations",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=450&fit=crop",
+    "video": "",
+    "available": true
+  },
+  {
+    "name": "COOLMAX Mobile 3000",
+    "description": "Portable industrial cooler with heavy-duty castor wheels for facility-wide mobility. Ideal for changing work zones and multi-area cooling requirements in dynamic industrial environments.",
+    "specifications": "3000 CFM | 90 x 70 x 160 cm | Multiple zones, Construction sites, Event spaces",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=450&fit=crop",
+    "video": "",
+    "available": false
+  }
+]
