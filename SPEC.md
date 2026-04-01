@@ -112,13 +112,15 @@ Industrial minimalism meets premium engineering. Inspired by machinery interface
 - Session stored in sessionStorage (clears on tab close)
 
 ### Visual Editor
-- Click "Enter Edit Mode" to start editing
-- All editable text is highlighted with dashed borders
-- Click "Toggle Highlight" to show/hide editable areas
-- Click any text to edit it inline
-- Click "Save Changes" to persist to localStorage
-- Click "Exit Edit Mode" to stop editing
-- All text content is editable, including "24/7" badge separately
+- Local-only feature (only works on localhost, disabled on Vercel)
+- Toggle with keyboard shortcut: `Ctrl + Shift + E`
+- Draggable toolbar appears when edit mode is active
+- All text elements with `data-content` attribute become editable
+- Visual indicator: dashed blue outline on editable elements
+- **Save & Export JSON**: Downloads content.json file
+- **Reset Changes**: Reverts to original content
+- **Exit**: Closes edit mode
+- Save workflow: Download content.json → replace /public/content.json → commit & push
 
 ### Contact Form
 - Name, email, phone, message fields
@@ -217,6 +219,7 @@ Product {
 ### Storage Keys
 - `polarcool_products`: Array of Product objects
 - `polarcool_admin_session`: boolean (sessionStorage)
+- `/public/content.json`: Text content for visual editor (loaded from file, exported as download)
 
 ### Key Libraries (CDN)
 - GSAP 3.x + ScrollTrigger for animations

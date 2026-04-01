@@ -371,5 +371,213 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="app.js"></script>
+    <script>
+    (function() {
+        const isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname.split(':')[0]);
+        
+        if (!isLocalhost) return;
+        
+        let editMode = false;
+        let originalContent = {};
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+        
+        const editableSelector = '[data-content]';
+        
+        async function loadContent() {
+            try {
+                const res = await fetch('/public/content.json');
+                if (res.ok) {
+                    const content = await res.json();
+                    Object.keys(content).forEach(key => {
+                        const el = document.querySelector(`[data-content="${key}"]`);
+                        if (el && content[key]) {
+                            if (el.innerHTML !== content[key]) {
+                                el.innerHTML = content[key];
+                            }
+                        }
+                    });
+                }
+            } catch(e) {}
+        }
+        
+        function toggleEditMode() {
+            editMode = !editMode;
+            const editables = document.querySelectorAll(editableSelector);
+            
+            if (editMode) {
+                editables.forEach(el => {
+                    originalContent[el.dataset.content] = el.innerHTML;
+                    el.setAttribute('contenteditable', 'true');
+                    el.setAttribute('data-original', el.innerHTML);
+                });
+                document.body.classList.add('edit-mode-active');
+                createToolbar();
+            } else {
+                exitEditMode();
+            }
+        }
+        
+        function exitEditMode() {
+            editMode = false;
+            const editables = document.querySelectorAll(editableSelector);
+            editables.forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+            document.body.classList.remove('edit-mode-active');
+            removeToolbar();
+        }
+        
+        function createToolbar() {
+            if (document.getElementById('editToolbar')) return;
+            
+            const toolbar = document.createElement('div');
+            toolbar.id = 'editToolbar';
+            toolbar.innerHTML = `
+                <div id="editToolbarDrag" style="cursor:move;padding:8px;margin-right:12px;border-right:1px solid #444;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
+                        <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
+                    </svg>
+                </div>
+                <span style="font-size:12px;margin-right:auto;color:#888;">Edit Mode Active</span>
+                <button id="editSaveBtn" style="background:#5A9A6B;border:none;padding:8px 16px;border-radius:6px;color:#fff;cursor:pointer;margin-right:8px;font-size:12px;font-weight:500;">Save & Export JSON</button>
+                <button id="editResetBtn" style="background:#C17F59;border:none;padding:8px 16px;border-radius:6px;color:#fff;cursor:pointer;margin-right:8px;font-size:12px;font-weight:500;">Reset Changes</button>
+                <button id="editExitBtn" style="background:#333;border:none;padding:8px 16px;border-radius:6px;color:#fff;cursor:pointer;font-size:12px;font-weight:500;">Exit (Ctrl+Shift+E)</button>
+            `;
+            document.body.appendChild(toolbar);
+            
+            const dragHandle = document.getElementById('editToolbarDrag');
+            dragHandle.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+            
+            document.getElementById('editSaveBtn').addEventListener('click', saveContent);
+            document.getElementById('editResetBtn').addEventListener('click', resetChanges);
+            document.getElementById('editExitBtn').addEventListener('click', exitEditMode);
+        }
+        
+        function removeToolbar() {
+            const toolbar = document.getElementById('editToolbar');
+            if (toolbar) toolbar.remove();
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+        
+        function startDrag(e) {
+            isDragging = true;
+            const toolbar = document.getElementById('editToolbar');
+            dragOffset.x = e.clientX - toolbar.offsetLeft;
+            dragOffset.y = e.clientY - toolbar.offsetTop;
+            toolbar.style.right = 'auto';
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            const toolbar = document.getElementById('editToolbar');
+            toolbar.style.left = (e.clientX - dragOffset.x) + 'px';
+            toolbar.style.top = (e.clientY - dragOffset.y) + 'px';
+            toolbar.style.bottom = 'auto';
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+        }
+        
+        function saveContent() {
+            const content = {};
+            const editables = document.querySelectorAll(editableSelector);
+            editables.forEach(el => {
+                content[el.dataset.content] = el.innerHTML;
+            });
+            
+            const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'content.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('content.json downloaded! Replace /public/content.json and commit.', 'success');
+        }
+        
+        function resetChanges() {
+            const editables = document.querySelectorAll(editableSelector);
+            editables.forEach(el => {
+                if (originalContent[el.dataset.content] !== undefined) {
+                    el.innerHTML = originalContent[el.dataset.content];
+                }
+            });
+            showToast('Changes reset to original.', 'info');
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `edit-toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+                e.preventDefault();
+                toggleEditMode();
+            }
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            .edit-mode-active [data-content] {
+                outline: 2px dashed #5B8A9A !important;
+                outline-offset: 2px;
+                cursor: text;
+                background: rgba(91, 138, 154, 0.05);
+            }
+            .edit-mode-active [data-content]:hover {
+                background: rgba(91, 138, 154, 0.15);
+            }
+            #editToolbar {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #1A1A1A;
+                border: 1px solid #333;
+                border-radius: 8px;
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                z-index: 99999;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            }
+            .edit-toast {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                background: #1A1A1A;
+                border: 1px solid #5B8A9A;
+                border-radius: 8px;
+                padding: 14px 24px;
+                color: #E8E6E3;
+                font-size: 14px;
+                z-index: 999999;
+                animation: slideUp 0.3s ease;
+            }
+            .edit-toast.success { border-color: #5A9A6B; }
+            .edit-toast.info { border-color: #C17F59; }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        loadContent();
+    })();
+    </script>
 </body>
 </html>
