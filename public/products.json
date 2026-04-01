@@ -1,5 +1,13 @@
 [
   {
+    "name": "cooler 1233",
+    "description": "advanced cooling",
+    "specifications": "500 olitre | 120x 180 | home ",
+    "image": "https://imgs.search.brave.com/-9Weaxs9OXYVVK7BJuo_arFKOm2OlXIVkYx5UaKoheU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bXlnLmluL2ltYWdl/cy90aHVtYm5haWxz/LzI1MC8yNTAvZGV0/YWlsZWQvMTE0L2Jw/bC1kZXNlcnQtY29v/bGVyLTM2bC1iY3Aw/MzZjZ2MtMTAwMHgx/MDAwLmpnZy1yZW1v/dmViZy1wcmV2aWV3/X18xXy5wbmcucG5n",
+    "video": "",
+    "available": true
+  },
+  {
     "name": "COOLMAX Pro 5000",
     "description": "Heavy-duty industrial air cooler designed for large factory floors and warehouses. Features triple-layer honeycomb cooling pads with enhanced airflow design for maximum cooling efficiency in extreme conditions.",
     "specifications": "5000 CFM | 120 x 80 x 180 cm | Factory floors, Large warehouses, Production lines",
@@ -21,6 +29,6 @@
     "specifications": "3000 CFM | 90 x 70 x 160 cm | Multiple zones, Construction sites, Event spaces",
     "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=450&fit=crop",
     "video": "",
-    "available": false
+    "available": true
   }
 ]
