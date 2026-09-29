@@ -1,0 +1,67 @@
+.footer {
+  background: #0a0a0a;
+  padding: 60px 0 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  color: var(--text);
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.links {
+  display: flex;
+  gap: 32px;
+}
+
+.links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.links a:hover {
+  color: var(--primary);
+}
+
+.bottom {
+  text-align: center;
+}
+
+.bottom p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .top {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .links {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}

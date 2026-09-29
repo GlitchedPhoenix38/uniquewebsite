@@ -1,0 +1,19 @@
+# Keep local-only admin tooling out of Vercel uploads.
+local-admin/
+src/app/admin/
+src/components/admin/
+
+# Never upload local secrets.
+.env
+.env.*
+!.env.example
+
+# Local/generated files.
+uploads/
+*.db
+.next/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

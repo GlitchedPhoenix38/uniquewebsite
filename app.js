@@ -320,14 +320,37 @@ class App {
         const form = document.getElementById('contactForm');
         if (!form) return;
         
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
             
-            this.showToast(`Thank you ${data.name}! We'll contact you shortly.`, 'success');
-            form.reset();
+            submitBtn.innerHTML = 'Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    this.showToast('Thank you! Your message has been sent successfully.', 'success');
+                    form.reset();
+                } else {
+                    this.showToast('Something went wrong. Please try again.', 'error');
+                }
+            } catch (error) {
+                this.showToast('Error sending message. Please try again.', 'error');
+            }
+            
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         });
     }
 
